@@ -64,11 +64,11 @@ function! s:object_start(line_number, pattern)
         elseif line =~ '^\s*):'  " Skip function or class closing parenthesis
             continue
         elseif !indent " Zero-level regular line
-            return line
+            return line_number
         elseif indent >= lowest_indent " Skip deeper or equal lines
             continue
-        elseif line !~ '^\s*@'
-            return line_number  " Skip decorators
+        elseif line =~ '^\s*@' " Skip decorators (TODO: include them!)
+            continue
         " Indent is strictly less at this point: check for def/class
         elseif line =~ a:pattern
             return line_number
