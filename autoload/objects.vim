@@ -97,8 +97,7 @@ function! s:object_end(line_number, indent)
     endwhile
     while line_number
         let line_number = nextnonblank(line_number + 1)
-        if getline(line_number) =~ '^\s*#' | continue
-        elseif getline(line_number) =~ s:closing_pattern | continue
+        if getline(line_number) =~ s:closing_pattern | continue
         elseif line_number && indent(line_number) <= a:indent
             return line_number - 1
         endif
