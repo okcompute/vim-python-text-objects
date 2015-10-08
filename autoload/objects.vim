@@ -60,8 +60,6 @@ function! s:object_start(line_number, pattern, inner)
             continue
         elseif line =~ '^\s*):'  " Skip function or class closing parenthesis
             continue
-        elseif !indent " Zero-level regular line
-            return line_number
         elseif indent >= lowest_indent " Skip deeper or equal lines
             continue
         elseif line =~ '^\s*@' " Skip decorators (TODO: include them!)
