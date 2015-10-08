@@ -19,10 +19,7 @@ function! s:select(pattern, ...)
     let inner = a:0 ? a:1 =~ 'inner' : 0
     let repeats = v:count1 - 1
     let origin = getpos('.')[1:2]
-    let start = s:object_start(origin[0], a:pattern)
-    if getline(start) !~ a:pattern
-        return 0
-    endif
+    let start = s:object_start(origin[0], a:pattern, inner)
     let end = s:object_end(start, indent(start))
     while repeats
         let line_number = search(a:pattern, 'nW')
@@ -52,7 +49,7 @@ function! s:select(pattern, ...)
 endfunction
 
 " Compute text object start line number.
-function! s:object_start(line_number, pattern)
+function! s:object_start(line_number, pattern, inner)
     let line_number = a:line_number + 1
     let lowest_indent = 100
     while line_number
@@ -71,6 +68,16 @@ function! s:object_start(line_number, pattern)
             continue
         " Indent is strictly less at this point: check for def/class
         elseif line =~ a:pattern
+            if !a:inner
+                while 1
+                    let previous = prevnonblank(line_number - 1)
+                    if getline(previous) =~ '^\s*@'
+                        let line_number = previous
+                    else
+                        break
+                    endif
+                endwhile
+            endif
             return line_number
         endif
         let lowest_indent = indent(line_number)
@@ -82,6 +89,14 @@ endfunction
 " Compute text object end line number.
 function! s:object_end(line_number, indent)
     let line_number = a:line_number
+    " Skip decorators
+    while 1
+        if getline(line_number) =~ '^\s*@'
+            let line_number = nextnonblank(line_number + 1)
+        else
+            break
+        endif
+    endwhile
     while line_number
         let line_number = nextnonblank(line_number + 1)
         if getline(line_number) =~ '^\s*#' | continue
