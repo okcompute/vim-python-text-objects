@@ -117,19 +117,19 @@ endfunction
 
 " {{{
 
-function! objects#select_inner_class()
+function! python#text_objects#select_inner_class()
     call s:select(s:class_pattern, 'inner')
 endfunction
 
-function! objects#select_a_class()
+function! python#text_objects#select_a_class()
     call s:select(s:class_pattern)
 endfunction
 
-function! objects#select_inner_method()
+function! python#text_objects#select_inner_method()
     call s:select(s:method_pattern, 'inner')
 endfunction
 
-function! objects#select_a_method()
+function! python#text_objects#select_a_method()
     call s:select(s:method_pattern)
 endfunction
 
